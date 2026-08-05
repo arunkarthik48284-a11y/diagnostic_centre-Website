@@ -68,15 +68,19 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// Start Server
-app.listen(PORT, async () => {
-  console.log(`=======================================================`);
-  console.log(`🚀 QuickDiag Server running at: http://localhost:${PORT}`);
-  console.log(`=======================================================`);
-  try {
-    await query.initSchema();
-    console.log('✅ SQLite Schema verified & ready.');
-  } catch (e) {
-    console.error('Schema initialization check failed:', e.message);
-  }
-});
+// Start Server (if executed directly)
+if (require.main === module) {
+  app.listen(PORT, async () => {
+    console.log(`=======================================================`);
+    console.log(`🚀 QuickDiag Server running at: http://localhost:${PORT}`);
+    console.log(`=======================================================`);
+    try {
+      await query.initSchema();
+      console.log('✅ SQLite Schema verified & ready.');
+    } catch (e) {
+      console.error('Schema initialization check failed:', e.message);
+    }
+  });
+}
+
+module.exports = app;
