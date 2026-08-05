@@ -1,6 +1,11 @@
 // QuickDiag API Client
 
-const API_BASE = '/api';
+const getApiBase = () => {
+  if (window.CONFIG && window.CONFIG.API_BASE_URL) {
+    return window.CONFIG.API_BASE_URL;
+  }
+  return '/api';
+};
 
 const API = {
   getToken() {
@@ -24,8 +29,10 @@ const API = {
       headers
     };
 
+    const baseUrl = getApiBase();
+
     try {
-      const response = await fetch(`${API_BASE}${endpoint}`, config);
+      const response = await fetch(`${baseUrl}${endpoint}`, config);
 
       if (response.status === 401 || response.status === 403) {
         if (!window.location.pathname.includes('login.html')) {
@@ -36,7 +43,18 @@ const API = {
         }
       }
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type') || '';
+      let data = {};
+      if (contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        if (!response.ok) {
+          throw new Error(`Backend API unreachable (${response.status}). Please check backend server deployment.`);
+        }
+        data = { message: text };
+      }
+
       if (!response.ok) {
         throw new Error(data.message || 'An error occurred during request.');
       }
