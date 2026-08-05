@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Users - QuickDiag Diagnostic System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white flex min-h-screen">
+
+  <div id="sidebar-container"></div>
+
+  <div class="flex-1 flex flex-col min-w-0">
+    <div id="header-container"></div>
+
+    <main class="p-6 space-y-6 max-w-7xl w-full mx-auto">
+      
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-extrabold tracking-tight">Staff Account Management</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm">Create receptionist, lab technician, and admin staff accounts with role permissions.</p>
+        </div>
+        <button onclick="openModal('user-modal')" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-blue-500/20 transition flex items-center gap-2">
+          <i data-lucide="user-plus" class="w-4 h-4"></i> Create Staff User Account
+        </button>
+      </div>
+
+      <!-- Users Table -->
+      <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-900/60 text-slate-500 font-bold text-xs uppercase border-b border-slate-200 dark:border-slate-700">
+              <tr>
+                <th class="px-6 py-4">User</th>
+                <th class="px-6 py-4">Email</th>
+                <th class="px-6 py-4">Assigned Role</th>
+                <th class="px-6 py-4">Phone Number</th>
+                <th class="px-6 py-4">Status</th>
+                <th class="px-6 py-4 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs font-semibold">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Create User Modal -->
+  <div id="user-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="font-extrabold text-lg">Create New Staff Account</h3>
+        <button onclick="closeModal('user-modal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+      </div>
+
+      <form id="user-form" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Full Name *</label>
+          <input type="text" id="u-name" required placeholder="Alex Mercer" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Email Address *</label>
+          <input type="email" id="u-email" required placeholder="staff@quickdiag.com" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Role *</label>
+          <select id="u-role" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none font-semibold">
+            <option value="Receptionist">Receptionist</option>
+            <option value="Lab Technician">Lab Technician</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Phone Number</label>
+          <input type="text" id="u-phone" placeholder="+1 (555) 000-0000" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Password *</label>
+          <input type="password" id="u-password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="closeModal('user-modal')" class="px-4 py-2 font-bold text-slate-500 hover:bg-slate-100 rounded-xl">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-500/20">Create Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/utils.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script>
+    async function loadUsers() {
+      try {
+        const res = await API.get('/users');
+        if (!res.success) return;
+        const tbody = document.getElementById('users-tbody');
+        if (!tbody) return;
+
+        tbody.innerHTML = res.users.map(u => `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+            <td class="px-6 py-4 flex items-center gap-3">
+              <img src="${u.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150'}" class="w-8 h-8 rounded-full object-cover">
+              <span class="font-extrabold text-slate-900 dark:text-white">${u.name}</span>
+            </td>
+            <td class="px-6 py-4 text-slate-600 dark:text-slate-300 font-mono">${u.email}</td>
+            <td class="px-6 py-4">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300 border border-blue-200">${u.role}</span>
+            </td>
+            <td class="px-6 py-4 text-slate-600 dark:text-slate-300">${u.phone || 'N/A'}</td>
+            <td class="px-6 py-4">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${u.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">${u.status}</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <button onclick="toggleUser(${u.id})" class="px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-xs font-bold rounded-lg">
+                ${u.status === 'Active' ? 'Deactivate' : 'Activate'}
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        showToast('Failed to load user accounts.', 'error');
+      }
+    }
+
+    async function toggleUser(id) {
+      try {
+        const res = await API.put(`/users/${id}/toggle`, {});
+        if (res.success) {
+          showToast(res.message, 'success');
+          loadUsers();
+        }
+      } catch (err) {
+        showToast(err.message || 'Failed to change user status.', 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUsers();
+
+      document.getElementById('user-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+          name: document.getElementById('u-name').value.trim(),
+          email: document.getElementById('u-email').value.trim(),
+          role: document.getElementById('u-role').value,
+          phone: document.getElementById('u-phone').value.trim(),
+          password: document.getElementById('u-password').value
+        };
+
+        try {
+          const res = await API.post('/users', payload);
+          if (res.success) {
+            showToast(res.message, 'success');
+            closeModal('user-modal');
+            loadUsers();
+          }
+        } catch (err) {
+          showToast(err.message || 'Failed to create user account.', 'error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

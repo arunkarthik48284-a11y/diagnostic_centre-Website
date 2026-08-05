@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patients - QuickDiag Diagnostic System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white flex min-h-screen">
+
+  <div id="sidebar-container"></div>
+
+  <div class="flex-1 flex flex-col min-w-0">
+    <div id="header-container"></div>
+
+    <main class="p-6 space-y-6 max-w-7xl w-full mx-auto">
+      
+      <!-- Top Title & Action Bar -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-extrabold tracking-tight">Patient Directory</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm">Register new patients, manage medical records, and generate digital ID cards.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="handleExportPatients()" class="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs hover:bg-slate-50 dark:hover:bg-slate-700 transition flex items-center gap-2">
+            <i data-lucide="download" class="w-4 h-4"></i> Export CSV
+          </button>
+          <button id="btn-add-patient-main" onclick="openPatientModal()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-blue-500/20 transition flex items-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i> Register New Patient
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters & Search Bar -->
+      <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div class="relative w-full md:w-80">
+          <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+          <input type="text" id="patient-search-input" placeholder="Search by name, phone, or ID..." class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-700/50 rounded-xl text-sm border-none outline-none">
+        </div>
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <select id="gender-filter" class="px-3 py-2 bg-slate-100 dark:bg-slate-700/50 rounded-xl text-xs font-semibold border-none outline-none">
+            <option value="">All Genders</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          <select id="blood-filter" class="px-3 py-2 bg-slate-100 dark:bg-slate-700/50 rounded-xl text-xs font-semibold border-none outline-none">
+            <option value="">All Blood Groups</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Patients Table -->
+      <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-900/60 text-slate-500 font-bold text-xs uppercase border-b border-slate-200 dark:border-slate-700">
+              <tr>
+                <th class="px-6 py-4">Patient Code</th>
+                <th class="px-6 py-4">Full Name</th>
+                <th class="px-6 py-4">Age / Gender</th>
+                <th class="px-6 py-4">Blood Group</th>
+                <th class="px-6 py-4">Phone / Email</th>
+                <th class="px-6 py-4">Doctor Ref</th>
+                <th class="px-6 py-4 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="patients-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs font-semibold">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Add/Edit Patient Modal -->
+  <div id="patient-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 id="patient-modal-title" class="font-extrabold text-lg">Register New Patient</h3>
+        <button onclick="closeModal('patient-modal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+      </div>
+
+      <form id="patient-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        <input type="hidden" id="edit-patient-id">
+        
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Full Name *</label>
+          <input type="text" id="p-name" required placeholder="John Doe" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Phone Number *</label>
+          <input type="text" id="p-phone" required placeholder="+1 (555) 000-0000" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Age *</label>
+          <input type="number" id="p-age" required min="0" max="120" placeholder="35" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Gender *</label>
+          <select id="p-gender" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Date of Birth</label>
+          <input type="date" id="p-dob" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Blood Group</label>
+          <select id="p-blood" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+            <option value="">Select Blood Group</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Email Address</label>
+          <input type="email" id="p-email" placeholder="patient@example.com" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Doctor Reference</label>
+          <input type="text" id="p-doctor" placeholder="Dr. Smith" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Emergency Contact</label>
+          <input type="text" id="p-emergency" placeholder="Spouse / Relative Phone" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Full Address</label>
+          <textarea id="p-address" rows="2" placeholder="Street, City, Zip Code" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none"></textarea>
+        </div>
+
+        <div class="sm:col-span-2 flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="closeModal('patient-modal')" class="px-4 py-2 font-bold text-slate-500 hover:bg-slate-100 rounded-xl">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-500/20">Save Patient Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- QR Code & Medical ID Modal -->
+  <div id="qr-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-center">
+      <h3 class="font-extrabold text-lg">Patient Digital ID Card</h3>
+      <p id="qr-patient-name" class="font-bold text-blue-600 text-sm"></p>
+      <p id="qr-patient-code" class="text-xs text-slate-400 font-mono"></p>
+      <div id="qrcode-box" class="flex justify-center p-4 bg-white rounded-2xl border border-slate-200"></div>
+      <button onclick="closeModal('qr-modal')" class="w-full py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl">Close Card</button>
+    </div>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/utils.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/patients.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Environment variables (NEVER commit secrets to GitHub)
+.env
+.env.local
+.env.production
+backend/.env
+frontend/.env
+
+# Local SQLite Database
+*.sqlite
+*.sqlite3
+quickdiag.sqlite
+
+# Uploaded Files
+uploads/*
+!uploads/.gitkeep
+
+# Logs and OS files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db

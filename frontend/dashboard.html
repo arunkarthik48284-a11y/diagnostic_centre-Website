@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - QuickDiag Diagnostic System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white flex min-h-screen">
+
+  <!-- Sidebar -->
+  <div id="sidebar-container"></div>
+
+  <!-- Main Content Wrapper -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <!-- Header -->
+    <div id="header-container"></div>
+
+    <!-- Main Body -->
+    <main class="p-6 space-y-6 max-w-7xl w-full mx-auto">
+      
+      <!-- Welcome Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-blue-600 to-indigo-600 p-6 rounded-3xl text-white shadow-xl shadow-blue-500/10">
+        <div>
+          <h2 class="text-2xl font-extrabold tracking-tight">Good Day, <span id="user-greeting-name">Doctor</span> 👋</h2>
+          <p class="text-blue-100 text-sm mt-1">Here is what is happening across your diagnostic facility today.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="/appointments.html" class="px-4 py-2.5 bg-white text-blue-600 font-bold rounded-xl text-xs shadow hover:bg-blue-50 transition flex items-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i> Book Appointment
+          </a>
+          <a href="/patients.html" class="px-4 py-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-bold rounded-xl text-xs transition flex items-center gap-2">
+            <i data-lucide="user-plus" class="w-4 h-4"></i> Add Patient
+          </a>
+        </div>
+      </div>
+
+      <!-- Top KPI Stat Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <!-- Patients Card -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Total Patients</span>
+            <div class="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 flex items-center justify-center">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <h3 id="stat-patients" class="text-2xl font-extrabold">0</h3>
+            <span class="text-xs text-emerald-600 font-semibold flex items-center gap-1 mt-0.5">
+              <i data-lucide="trending-up" class="w-3 h-3"></i> +12% this month
+            </span>
+          </div>
+        </div>
+
+        <!-- Today Appointments Card -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Today's Appts</span>
+            <div class="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 flex items-center justify-center">
+              <i data-lucide="calendar" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <h3 id="stat-today-appts" class="text-2xl font-extrabold">0</h3>
+            <span class="text-xs text-indigo-600 font-semibold flex items-center gap-1 mt-0.5">
+              Scheduled today
+            </span>
+          </div>
+        </div>
+
+        <!-- Completed Tests Card -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Completed Tests</span>
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 flex items-center justify-center">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <h3 id="stat-completed-tests" class="text-2xl font-extrabold">0</h3>
+            <span class="text-xs text-emerald-600 font-semibold flex items-center gap-1 mt-0.5">
+              Reports delivered
+            </span>
+          </div>
+        </div>
+
+        <!-- Pending Reports Card -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Pending Reports</span>
+            <div class="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center">
+              <i data-lucide="clock" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <h3 id="stat-pending-reports" class="text-2xl font-extrabold">0</h3>
+            <span class="text-xs text-amber-600 font-semibold flex items-center gap-1 mt-0.5">
+              In lab / testing
+            </span>
+          </div>
+        </div>
+
+        <!-- Revenue Today Card -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Revenue Today</span>
+            <div class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 flex items-center justify-center">
+              <i data-lucide="dollar-sign" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <h3 id="stat-rev-today" class="text-2xl font-extrabold">$0</h3>
+            <span class="text-xs text-purple-600 font-semibold flex items-center gap-1 mt-0.5">
+              Paid invoices
+            </span>
+          </div>
+        </div>
+
+        <!-- Monthly Revenue Card -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Monthly Revenue</span>
+            <div class="w-9 h-9 rounded-xl bg-cyan-100 dark:bg-cyan-950/60 text-cyan-600 flex items-center justify-center">
+              <i data-lucide="trending-up" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <h3 id="stat-rev-month" class="text-2xl font-extrabold">$0</h3>
+            <span class="text-xs text-cyan-600 font-semibold flex items-center gap-1 mt-0.5">
+              MTD Performance
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section (2 Columns) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Daily Patients Trend Chart -->
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-extrabold text-base">Daily Patients & Appointments</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Patient turnout over the past 7 days</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300 rounded-lg">7 Days</span>
+          </div>
+          <div class="h-64 relative">
+            <canvas id="dailyPatientsChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Test Categories Breakdown -->
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-extrabold text-base">Test Categories Breakdown</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Distribution across pathology, radiology, cardiology</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300 rounded-lg">Catalog</span>
+          </div>
+          <div class="h-64 relative flex items-center justify-center">
+            <canvas id="categoriesChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Tables: Popular Tests & Recent Activities -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Popular Tests Table -->
+        <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-extrabold text-base">Most Popular Diagnostic Tests</h3>
+            <a href="/tests.html" class="text-xs font-bold text-blue-600 hover:underline">View All Catalog &rarr;</a>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="text-slate-400 font-bold border-b border-slate-100 dark:border-slate-700">
+                <tr>
+                  <th class="pb-3">Test Name</th>
+                  <th class="pb-3">Category</th>
+                  <th class="pb-3">Price</th>
+                  <th class="pb-3 text-right">Bookings Count</th>
+                </tr>
+              </thead>
+              <tbody id="popular-tests-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 font-semibold">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Activities Feed -->
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 class="font-extrabold text-base mb-4">Recent Audit Activity</h3>
+          <div id="recent-activities-list" class="space-y-4">
+            <!-- Dynamic activity logs -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/utils.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>
