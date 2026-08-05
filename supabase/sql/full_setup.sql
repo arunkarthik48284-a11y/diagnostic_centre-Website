@@ -152,7 +152,7 @@ CREATE INDEX idx_invoices_num ON invoices(invoice_number);
 
 -- Seed Demo Users
 INSERT INTO users (name, email, password_hash, role, phone, status) VALUES
-('Dr. Sarah Jenkins', 'admin@quickdiag.com', '$2a$10$Wp4X.M48Q0d5S9Xz6C3E/e0g7T5/uKkPqA5Y1GzXwR2q7uY7T1uG6', 'Admin', '+1 (555) 100-2000', 'Active'),
+('P.Ravi', 'admin@quickdiag.com', '$2a$10$Wp4X.M48Q0d5S9Xz6C3E/e0g7T5/uKkPqA5Y1GzXwR2q7uY7T1uG6', 'Admin', '+1 (555) 100-2000', 'Active'),
 ('Emily Watson', 'reception@quickdiag.com', '$2a$10$7Z8qM48Q0d5S9Xz6C3E/e0g7T5/uKkPqA5Y1GzXwR2q7uY7T1uG6', 'Receptionist', '+1 (555) 200-3000', 'Active'),
 ('Marcus Vance', 'tech@quickdiag.com', '$2a$10$8A9qM48Q0d5S9Xz6C3E/e0g7T5/uKkPqA5Y1GzXwR2q7uY7T1uG6', 'Lab Technician', '+1 (555) 300-4000', 'Active'),
 ('Robert Downey', 'patient@quickdiag.com', '$2a$10$9B0qM48Q0d5S9Xz6C3E/e0g7T5/uKkPqA5Y1GzXwR2q7uY7T1uG6', 'Patient', '+1 (555) 044-5566', 'Active');

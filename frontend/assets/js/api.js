@@ -49,7 +49,7 @@ const API = {
 
       // Demo accounts dictionary fallback
       const demoUsers = {
-        'admin@quickdiag.com': { id: 1, name: 'Dr. Sarah Jenkins', email: 'admin@quickdiag.com', role: 'Admin', phone: '+1 (555) 100-2000' },
+        'admin@quickdiag.com': { id: 1, name: 'P.Ravi', email: 'admin@quickdiag.com', role: 'Admin', phone: '+1 (555) 100-2000' },
         'reception@quickdiag.com': { id: 2, name: 'Emily Watson', email: 'reception@quickdiag.com', role: 'Receptionist', phone: '+1 (555) 200-3000' },
         'tech@quickdiag.com': { id: 3, name: 'Marcus Vance', email: 'tech@quickdiag.com', role: 'Lab Technician', phone: '+1 (555) 300-4000' },
         'patient@quickdiag.com': { id: 4, name: 'Robert Downey', email: 'patient@quickdiag.com', role: 'Patient', phone: '+1 (555) 044-5566' }
