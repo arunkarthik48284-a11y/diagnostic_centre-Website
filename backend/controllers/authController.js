@@ -35,12 +35,16 @@ exports.login = async (req, res) => {
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' });
 
     // Log login activity
-    await query.run('INSERT INTO activity_logs (user_id, action, description, ip_address) VALUES (?, ?, ?, ?)', [
-      user.id,
-      'User Login',
-      `${user.role} ${user.name} logged in successfully.`,
-      req.ip || '127.0.0.1'
-    ]);
+    try {
+      await query.run('INSERT INTO activity_logs (user_id, action, description, ip_address) VALUES (?, ?, ?, ?)', [
+        user.id,
+        'User Login',
+        `${user.role} ${user.name} logged in successfully.`,
+        req.ip || '127.0.0.1'
+      ]);
+    } catch (logErr) {
+      console.warn('Login activity log warning:', logErr.message);
+    }
 
     return res.json({
       success: true,
