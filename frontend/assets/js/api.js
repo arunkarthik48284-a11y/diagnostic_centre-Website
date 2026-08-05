@@ -178,12 +178,42 @@ const API = {
 
     // 4. Diagnostic Tests Fallback
     if (endpoint.startsWith('/tests')) {
+      const defaultTests = [
+        { id: 1, test_name: 'CBC (Complete Blood Count)', category: 'Pathology', price: 45.00, estimated_hours: 12, description: 'Includes RBC, WBC, Hemoglobin, Hematocrit, and Platelets count.', prep_instructions: 'No special preparation required.' },
+        { id: 2, test_name: 'Random Plasma Glucose', category: 'Pathology', price: 120.00, estimated_hours: 6, description: 'Random Plasma Glucose blood sugar test.', prep_instructions: 'No special fasting required.' },
+        { id: 3, test_name: 'Complete Urine Examination (CUE)', category: 'Pathology', price: 200.00, estimated_hours: 6, description: 'Complete Urine Examination physical, chemical & microscopic analysis.', prep_instructions: 'Clean mid-stream morning sample.' },
+        { id: 4, test_name: 'Complete Blood Picture / Haemogram', category: 'Pathology', price: 400.00, estimated_hours: 12, description: 'Complete Blood Picture / Haemogram evaluation.', prep_instructions: 'No special preparation needed.' },
+        { id: 5, test_name: 'Liver Function Test (LFT)', category: 'Pathology', price: 690.00, estimated_hours: 24, description: 'Evaluates Bilirubin, SGOT, SGPT, and liver enzymes.', prep_instructions: 'Avoid alcohol 24 hours prior.' },
+        { id: 6, test_name: 'Lipid Profile', category: 'Pathology', price: 690.00, estimated_hours: 24, description: 'Measures Cholesterol, Triglycerides, HDL, and LDL.', prep_instructions: 'Overnight 10-12 hours fasting required.' },
+        { id: 7, test_name: 'Thyroid Stimulating Hormone (TSH)', category: 'Pathology', price: 340.00, estimated_hours: 24, description: 'Thyroid Stimulating Hormone assay for thyroid regulation.', prep_instructions: 'Morning sample preferred.' },
+        { id: 8, test_name: 'Vitamin B12 / Vitamin D Total', category: 'Pathology', price: 1350.00, estimated_hours: 24, description: 'Assay for Vitamin B12 and Vitamin D Total levels.', prep_instructions: 'Fasting optional.' },
+        { id: 9, test_name: 'Kidney Function Test (KFT)', category: 'Pathology', price: 70.00, estimated_hours: 24, description: 'Measures Serum Creatinine, Blood Urea Nitrogen, Uric Acid.', prep_instructions: 'Stay adequately hydrated.' },
+        { id: 10, test_name: 'HbA1c (Glycated Hemoglobin)', category: 'Pathology', price: 50.00, estimated_hours: 12, description: 'Measures average blood sugar control over 3 months.', prep_instructions: 'Fasting not required.' },
+        { id: 11, test_name: 'Electrocardiogram (ECG)', category: 'Radiology & Cardiology', price: 350.00, estimated_hours: 2, description: '12-Lead Electrocardiogram measuring heart electrical activity.', prep_instructions: 'Rest 10 minutes prior.' },
+        { id: 12, test_name: 'Ultrasound (Abdomen)', category: 'Radiology & Cardiology', price: 1500.00, estimated_hours: 12, description: 'Abdominal USG scan of liver, kidneys, gallbladder and spleen.', prep_instructions: 'Full bladder required.' },
+        { id: 13, test_name: 'Chest X-Ray PA View', category: 'Radiology & Cardiology', price: 55.00, estimated_hours: 6, description: 'Digital X-ray for pulmonary and cardiac anatomical evaluation.', prep_instructions: 'Remove metal objects.' },
+        { id: 14, test_name: 'MRI Brain (Plain)', category: 'Radiology & Cardiology', price: 350.00, estimated_hours: 48, description: 'High-resolution MRI scan of brain parenchyma.', prep_instructions: 'Report any metal implants.' },
+        { id: 15, test_name: 'CT Scan Chest (HRCT)', category: 'Radiology & Cardiology', price: 220.00, estimated_hours: 24, description: 'High-resolution computed tomography scan of lungs.', prep_instructions: 'Fast for 4 hours if contrast dye is advised.' },
+        { id: 16, test_name: 'Basic / Preventive Health Checkup', category: 'Health Packages', price: 999.00, estimated_hours: 24, description: 'Basic Preventive Health Package including key pathology & urine tests.', prep_instructions: '10-12 hours overnight fasting required.' },
+        { id: 17, test_name: 'Comprehensive Full Body Checkup', category: 'Health Packages', price: 3500.00, estimated_hours: 24, description: 'Full Body Package with complete pathology, organ panels & ECG.', prep_instructions: 'Overnight fasting required.' }
+      ];
+
+      let tests = [];
+      try {
+        tests = await this.supabaseFetch('tests?select=*&order=category.asc,test_name.asc');
+      } catch (e) {
+        console.warn('Supabase tests query warning:', e.message);
+      }
+
+      if (!tests || tests.length === 0) {
+        tests = defaultTests;
+      }
+
       if (endpoint.includes('/categories')) {
-        const tests = await this.supabaseFetch('tests?select=category');
         const categories = [...new Set(tests.map(t => t.category))].sort();
         return { success: true, categories };
       }
-      const tests = await this.supabaseFetch('tests?select=*&order=category.asc,test_name.asc');
+
       return { success: true, count: tests.length, tests };
     }
 
