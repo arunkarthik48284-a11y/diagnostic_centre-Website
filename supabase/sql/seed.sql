@@ -29,7 +29,18 @@ INSERT INTO tests (test_name, category, price, estimated_hours, description, pre
 ('Vitamin D Total (25-OH)', 'Pathology', 80.00, 24, 'Chemiluminescence immunoassay for 25-hydroxy vitamin D levels.', 'Fasting optional.'),
 ('Vitamin B12 Assay', 'Pathology', 70.00, 24, 'Serum cyanocobalamin quantification for nerve health.', 'Overnight fasting recommended.'),
 ('Urine Routine & Microscopy', 'Pathology', 30.00, 6, 'Physical, chemical, and microscopic urinalysis.', 'First morning mid-stream urine sample preferred.'),
-('Stool Routine & Occult Blood', 'Pathology', 35.00, 12, 'Screening for intestinal infections and occult GI bleeding.', 'Collect in sterile specimen container provided.')
+('Stool Routine & Occult Blood', 'Pathology', 35.00, 12, 'Screening for intestinal infections and occult GI bleeding.', 'Collect in sterile specimen container provided.'),
+('Random Plasma Glucose', 'Pathology', 120.00, 6, 'Random Plasma Glucose blood sugar test.', 'No special fasting required.'),
+('Complete Urine Examination (CUE)', 'Pathology', 200.00, 6, 'Complete Urine Examination physical, chemical & microscopic analysis.', 'Clean mid-stream morning sample.'),
+('Complete Blood Picture / Haemogram', 'Pathology', 400.00, 12, 'Complete Blood Picture / Haemogram evaluation.', 'No special preparation needed.'),
+('Liver Function Test (LFT - Vijaya)', 'Pathology', 690.00, 24, 'Evaluates Bilirubin, SGOT, SGPT, and liver enzymes.', 'Avoid alcohol 24 hours prior.'),
+('Lipid Profile (Vijaya Special)', 'Pathology', 690.00, 24, 'Measures Cholesterol, Triglycerides, HDL, and LDL.', 'Overnight 10-12 hours fasting required.'),
+('Thyroid Stimulating Hormone (TSH - Vijaya)', 'Pathology', 340.00, 24, 'Thyroid Stimulating Hormone assay for thyroid regulation.', 'Morning sample preferred.'),
+('Vitamin B12 / Vitamin D Total', 'Pathology', 1350.00, 24, 'Assay for Vitamin B12 and Vitamin D Total levels.', 'Fasting optional.'),
+('Electrocardiogram (ECG - Vijaya)', 'Radiology & Cardiology', 350.00, 2, '12-Lead Electrocardiogram measuring heart electrical activity.', 'Rest 10 minutes prior.'),
+('Ultrasound (Abdomen - Vijaya)', 'Radiology & Cardiology', 1500.00, 12, 'Abdominal USG scan of liver, kidneys, gallbladder and spleen.', 'Full bladder required.'),
+('Basic / Preventive Health Checkup', 'Health Packages', 999.00, 24, 'Basic Preventive Health Package including key pathology & urine tests.', '10-12 hours overnight fasting required.'),
+('Comprehensive Full Body Checkup', 'Health Packages', 3500.00, 24, 'Full Body Package with complete pathology, organ panels & ECG.', 'Overnight fasting required.')
 ON CONFLICT DO NOTHING;
 
 -- Seed Facility Default Settings
